@@ -1,4 +1,4 @@
-## Runit init scripts for SAUX AArch64
+## Runit init scripts for SAUX Aarch64
 
 This repository contains the runit init scripts for the SAUX AArch64.
 
