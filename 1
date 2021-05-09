@@ -1,0 +1,36 @@
+#!/bin/sh
+#
+
+PATH=/bin:/usr/bin:/sbin:/usr/sbin
+
+. /etc/runit/functions
+
+/usr/bin/clear
+/bin/echo
+
+/usr/bin/printf "   The System SAUX Aarch64 starts up...\n"
+
+[ -r /etc/rc.conf ] && . /etc/rc.conf
+/bin/echo
+msg "Loading core service..."
+/bin/echo
+
+# Start core services: one-time system tasks.
+detect_virt
+for f in /etc/runit/core-services/*.sh; do
+    [ -r $f ] && . $f
+done
+
+dmesg >/var/log/dmesg.log
+if [ $(sysctl -n kernel.dmesg_restrict 2>/dev/null) -eq 1 ]; then
+	chmod 0600 /var/log/dmesg.log
+else
+	chmod 0644 /var/log/dmesg.log
+fi
+
+mkdir -p /run/runit
+install -m100 /dev/null /run/runit/reboot
+install -m100 /dev/null /run/runit/stopit
+
+msg "Initialization complete, running stage 2..."
+/bin/echo
